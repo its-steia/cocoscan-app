@@ -310,60 +310,68 @@
                 border-color: #cbd5e1;
                 box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
             }
-            .modal-action-circle-btn {
+            #report-print-btn {
                 display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                width: 44px !important;
-                height: 44px !important;
-                min-width: 44px !important;
-                min-height: 44px !important;
-                max-width: 44px !important;
-                max-height: 44px !important;
+                width: 38px !important;
+                height: 38px !important;
+                min-width: 38px !important;
+                min-height: 38px !important;
                 padding: 0 !important;
                 border-radius: 50% !important;
+                background-color: #f3f4f6 !important;
+                color: #164630 !important;
+                border: 1px solid #e6e7ea !important;
+                box-shadow: none !important;
                 cursor: pointer;
                 transition: all 0.2s ease !important;
-                font-size: 1.05rem !important;
+                font-size: 1rem !important;
                 line-height: 1 !important;
             }
 
-            .modal-action-circle-btn:active {
+            #report-print-btn:hover,
+            #report-print-btn:focus-visible {
+                background-color: #e5e7eb !important;
+                color: #14532d !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+            }
+
+            #report-print-btn:active {
                 transform: scale(0.96) !important;
             }
 
-            /* Print button: brand green tint */
-            #report-print-btn.modal-action-circle-btn {
-                background-color: #f0fdf4 !important;
-                color: #166534 !important;
-                border: 1px solid #bbf7d0 !important;
-                box-shadow: 0 1px 3px rgba(22, 101, 52, 0.06) !important;
+            #report-modal-close-btn {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: auto !important;
+                min-height: 36px !important;
+                padding: 6px 18px !important;
+                border-radius: 999px !important;
+                background-color: #dc2626 !important;
+                color: #ffffff !important;
+                border: 1px solid #dc2626 !important;
+                font-weight: 600 !important;
+                font-size: 0.9rem !important;
+                line-height: 1.2 !important;
+                box-shadow: none !important;
+                cursor: pointer;
+                transition: all 0.2s ease !important;
             }
 
-            #report-print-btn.modal-action-circle-btn:hover,
-            #report-print-btn.modal-action-circle-btn:focus-visible {
-                background-color: #dcfce7 !important;
-                color: #14532d !important;
-                border-color: #86efac !important;
+            #report-modal-close-btn:hover,
+            #report-modal-close-btn:focus-visible {
+                background-color: #b91c1c !important;
+                border-color: #b91c1c !important;
+                color: #ffffff !important;
                 transform: translateY(-1px) !important;
-                box-shadow: 0 3px 8px rgba(22, 101, 52, 0.12) !important;
+                box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25) !important;
             }
 
-            /* Close button: soft rose tint */
-            #report-modal-close-btn.modal-action-circle-btn {
-                background-color: #fef2f2 !important;
-                color: #dc2626 !important;
-                border: 1px solid #fecaca !important;
-                box-shadow: 0 1px 3px rgba(220, 38, 38, 0.06) !important;
-            }
-
-            #report-modal-close-btn.modal-action-circle-btn:hover,
-            #report-modal-close-btn.modal-action-circle-btn:focus-visible {
-                background-color: #fee2e2 !important;
-                color: #b91c1c !important;
-                border-color: #fca5a5 !important;
-                transform: translateY(-1px) !important;
-                box-shadow: 0 3px 8px rgba(220, 38, 38, 0.12) !important;
+            #report-modal-close-btn:active {
+                transform: scale(0.96) !important;
             }
             /* Make the reschedule/schedule modal close buttons use the primary red pill (photo1)
                and hover into a subtle light background instead of darkening. */
@@ -749,14 +757,12 @@
         <div class="modal-header-inline" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px;">
             <h2 style="margin: 0;" data-i18n="modal.summary_title">{{ t('modal.summary_title', 'Report Summary') }}</h2>
             <div style="display:flex; align-items:center; gap:8px;">
-                <!-- Print button: unified 44x44 circular button -->
-                <button id="report-print-btn" class="modal-action-circle-btn" type="button" title="{{ t('modal.btn_print', 'Print report') }}" aria-label="{{ t('modal.btn_print', 'Print report') }}" onclick="printReportModal()">
+                <!-- Print button: circular icon button -->
+                <button id="report-print-btn" type="button" title="{{ t('modal.btn_print', 'Print report') }}" aria-label="{{ t('modal.btn_print', 'Print report') }}" onclick="printReportModal()">
                     <i class="fa-solid fa-print"></i>
                 </button>
-                <!-- Close button: unified 44x44 circular button (×) matching print button -->
-                <button id="report-modal-close-btn" class="modal-action-circle-btn" type="button" title="{{ t('modal.btn_close', 'Close') }}" aria-label="{{ t('modal.btn_close', 'Close') }}" onclick="closeReportModal()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                <!-- Close button: primary red pill button -->
+                <button class="btn-control cancel-secondary" id="report-modal-close-btn" type="button" onclick="closeReportModal()" data-i18n="modal.btn_close">{{ t('modal.btn_close', 'Close') }}</button>
             </div>
         </div>
 
