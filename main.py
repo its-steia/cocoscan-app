@@ -59,6 +59,7 @@ from app.recommendations import recommend_actions
 from app.session_utils import (
     RoleBasedSessionInterface,
     INACTIVITY_TIMEOUT_SECONDS,
+    FARMER_REMEMBER_INACTIVITY_SECONDS,
     REMEMBER_COOKIE_NAME,
     is_farmer_role,
     get_remember_me_lifetime_seconds
@@ -256,41 +257,51 @@ def check_session_timeout():
     if 'user_id' in session:
         user_email = session.get('user_email', '')
         user_role = normalize_role(session.get('user_role', ''))
-        remember_me = session.get('remember_me', False) and is_farmer_role(user_role)
-        
-        # Check hard 90-day expiration date if set for farmer
-        session_expires_at = session.get('session_expires_at')
-        if session_expires_at and now > session_expires_at:
+        last_active = session.get('last_active', now)
+
+        if is_farmer_role(user_role):
+            # Check hard 90-day expiration date if set for farmer
+            session_expires_at = session.get('session_expires_at')
+            if session_expires_at and now > session_expires_at:
+                remember_token = request.cookies.get(REMEMBER_COOKIE_NAME)
+                if remember_token:
+                    security_service.revoke_remember_token(remember_token)
+                session.clear()
+                security_service.log_audit(user_email, user_role, "SESSION_EXPIRED", "Farmer session expired after maximum 90 days duration", _get_real_ip())
+                flash("Your session has expired. Please log in again.", "warning")
+                resp = redirect(url_for('login'))
+                resp.delete_cookie(REMEMBER_COOKIE_NAME)
+                return resp
+
+            # Farmers are excluded from the 15-minute inactivity timeout.
+            # Enforce the 30-day sliding inactivity expiration rule instead.
+            if now - last_active > FARMER_REMEMBER_INACTIVITY_SECONDS:
+                remember_token = request.cookies.get(REMEMBER_COOKIE_NAME)
+                if remember_token:
+                    security_service.revoke_remember_token(remember_token)
+                session.clear()
+                security_service.log_audit(user_email, user_role, "SESSION_TIMEOUT", "Farmer session expired due to 30 days of inactivity", _get_real_ip())
+                flash("Your session has expired due to 30 days of inactivity. Please log in again.", "warning")
+                resp = redirect(url_for('login'))
+                resp.delete_cookie(REMEMBER_COOKIE_NAME)
+                return resp
+
+            # If persistent remember token cookie is present, refresh it seamlessly
             remember_token = request.cookies.get(REMEMBER_COOKIE_NAME)
             if remember_token:
-                security_service.revoke_remember_token(remember_token)
-            session.clear()
-            security_service.log_audit(user_email, user_role, "SESSION_EXPIRED", "Remembered session expired after maximum 90 days duration", _get_real_ip())
-            flash("Your session has expired. Please log in again.", "warning")
-            resp = redirect(url_for('login'))
-            resp.delete_cookie(REMEMBER_COOKIE_NAME)
-            return resp
-            
-        # Check standard 15-minute inactivity timeout
-        last_active = session.get('last_active', now)
-        if now - last_active > INACTIVITY_TIMEOUT_SECONDS:
-            remember_token = request.cookies.get(REMEMBER_COOKIE_NAME)
-            if remember_me and remember_token and is_farmer_role(user_role):
                 token_data = security_service.validate_remember_token(remember_token)
                 if token_data:
-                    # Token still valid in DB (active within 30 days & not expired 90d), refresh activity seamlessly
-                    session['last_active'] = now
                     session['session_expires_at'] = token_data['expires_at']
-                    return None
-            
-            # Non-remembered, non-farmer, or inactive > 30 days: expire session
-            session.clear()
-            security_service.log_audit(user_email, user_role, "SESSION_TIMEOUT", "Session expired due to 15 minutes of inactivity", _get_real_ip())
-            flash("Your session has expired due to 15 minutes of inactivity. Please log in again.", "warning")
-            resp = redirect(url_for('login'))
-            resp.delete_cookie(REMEMBER_COOKIE_NAME)
-            return resp
-            
+        else:
+            # Non-farmer roles (Admin, Agriculturist, LGU): strictly enforce standard 15-minute inactivity timeout
+            if now - last_active > INACTIVITY_TIMEOUT_SECONDS:
+                session.clear()
+                security_service.log_audit(user_email, user_role, "SESSION_TIMEOUT", "Session expired due to 15 minutes of inactivity", _get_real_ip())
+                flash("Your session has expired due to 15 minutes of inactivity. Please log in again.", "warning")
+                resp = redirect(url_for('login'))
+                resp.delete_cookie(REMEMBER_COOKIE_NAME)
+                return resp
+
         session['last_active'] = now
 
 @app.after_request
@@ -2958,6 +2969,20 @@ def api_analytics():
                     start_date_str = f"{year}-{month:02d}-01"
                     end_date_str = f"{year}-{month:02d}-{last_day:02d}"
             except ValueError:
+                pass
+        elif week_str:
+            try:
+                from datetime import datetime
+                today = datetime.now()
+                year = today.year
+                month = today.month
+                last_day = calendar.monthrange(year, month)[1]
+                week = int(week_str)
+                start_day = (week - 1) * 7 + 1
+                end_day = min(week * 7, last_day) if week < 4 else last_day
+                start_date_str = f"{year}-{month:02d}-{start_day:02d}"
+                end_date_str = f"{year}-{month:02d}-{end_day:02d}"
+            except (ValueError, TypeError):
                 pass
 
         try:

@@ -47,14 +47,15 @@
         align-items: center;
         gap: 16px;
         background: #fff;
-        padding: 16px 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        padding: 16px 22px;
+        border-radius: 20px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
 
     .filters-bar input {
         padding: 8px 14px;
-        border: 1px solid #e2e8f0;
+        border: 1.5px solid #e2e8f0;
         border-radius: 20px;
         font-family: inherit;
         font-size: 0.85rem;
@@ -64,19 +65,19 @@
     }
 
     .filters-bar input:hover {
-        border-color: #1a4d32;
-        color: #1a4d32;
+        border-color: #2A7B4C;
+        color: #164630;
     }
 
     .filters-bar input:focus {
         outline: none;
-        border-color: #1a4d32;
-        box-shadow: 0 0 0 3px rgba(26, 77, 50, 0.1);
+        border-color: #2A7B4C;
+        box-shadow: 0 0 0 3px rgba(42, 123, 76, 0.15);
     }
 
     .chip-filter-btn {
         background-color: #ffffff;
-        color: #64748b;
+        color: #475569;
         border: 1px solid #e2e8f0;
         padding: 8px 16px;
         border-radius: 20px;
@@ -91,15 +92,16 @@
     }
 
     .chip-filter-btn:hover {
-        border-color: #1a4d32;
-        color: #1a4d32;
+        border-color: #2A7B4C;
+        color: #2A7B4C;
+        background-color: #f8fafc;
     }
 
     .chip-filter-btn.active-chip {
-        background-color: #1a4d32;
+        background-color: #164630;
         color: #ffffff;
-        border-color: #1a4d32;
-        box-shadow: 0 2px 6px rgba(26, 77, 50, 0.2);
+        border-color: #164630;
+        box-shadow: 0 2px 8px rgba(22, 70, 48, 0.2);
     }
 
     .month-chip-container {
@@ -108,12 +110,12 @@
     }
 
     .month-chip-container:hover .chip-filter-btn {
-        border-color: #1a4d32;
+        border-color: #2A7B4C;
     }
 
     .chip-filter-btn.active-chip,
     .chip-filter-btn.active-chip:hover {
-        background-color: #1a4d32;
+        background-color: #164630;
         color: #ffffff;
     }
 
@@ -121,35 +123,60 @@
         color: inherit;
     }
 
+    .filter-chip-wrapper {
+        position: relative;
+        display: inline-flex;
+    }
+
     .filter-dropdown-panel {
         display: none;
         position: absolute;
-        top: 100%;
+        top: calc(100% + 8px);
         left: 0;
-        margin-top: 8px;
-        background: white;
-        border: 1px solid #e2e8f0;
-        border-radius: 8px;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-        min-width: 180px;
-        max-height: 240px;
-        overflow: auto;
+        background: #ffffff;
+        border: 1.5px solid rgba(0, 0, 0, 0.08);
+        border-radius: 14px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        width: max-content;
+        min-width: 230px;
+        max-width: min(340px, calc(100vw - 32px));
+        max-height: 280px;
+        overflow-y: auto;
         z-index: 100;
-        padding: 8px;
+        padding: 6px;
+        box-sizing: border-box;
+        animation: dropdownFadeIn 0.15s ease-out;
+    }
+
+    @keyframes dropdownFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .dropdown-item {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         width: 100%;
-        padding: 8px 12px;
+        padding: 9px 14px;
         text-align: left;
         background: transparent;
         border: none;
         cursor: pointer;
-        font-size: 0.9rem;
+        font-size: 0.88rem;
+        font-weight: 500;
         color: #1e293b;
-        border-radius: 6px;
-        transition: background-color 0.15s;
+        border-radius: 8px;
+        transition: all 0.15s ease;
+        white-space: nowrap;
+        box-sizing: border-box;
+        gap: 12px;
     }
 
     .dropdown-item:hover {
@@ -160,13 +187,35 @@
     .dropdown-item.selected {
         background-color: #ecfdf5;
         color: #065f46;
+        font-weight: 700;
+    }
+
+    .dropdown-item .item-range-pill {
+        font-size: 0.76rem;
         font-weight: 600;
+        color: #64748b;
+        background: #f1f5f9;
+        padding: 3px 8px;
+        border-radius: 6px;
+        letter-spacing: 0.2px;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+    }
+
+    .dropdown-item:hover .item-range-pill {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
+    .dropdown-item.selected .item-range-pill {
+        background: rgba(6, 95, 70, 0.12);
+        color: #065f46;
     }
 
     .btn-clear-filters {
-        background-color: #eb5757;
-        color: #ffffff;
-        border: none;
+        background-color: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
         padding: 8px 16px;
         border-radius: 20px;
         font-size: 0.85rem;
@@ -180,7 +229,15 @@
     }
 
     .btn-clear-filters:hover {
-        background-color: #d64040;
+        background-color: #e2e8f0;
+        color: #1e293b;
+        border-color: #cbd5e1;
+    }
+
+    .btn-generate-report:hover {
+        background: #1e5c3f !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(22, 70, 48, 0.35) !important;
     }
 
     .charts-grid {
@@ -201,15 +258,69 @@
         .charts-breakdown-row {
             grid-template-columns: 1fr;
         }
+
+        .filters-bar {
+            padding: 14px 18px;
+            gap: 12px;
+        }
+
+        .filter-actions-group {
+            width: 100%;
+            margin-left: 0 !important;
+            margin-top: 4px;
+        }
+
+        #generateReportBtn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .filter-dropdown-panel {
+            max-width: calc(100vw - 48px);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .filters-bar {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 16px;
+        }
+
+        .filter-controls-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-chip-wrapper {
+            width: 100%;
+        }
+
+        .chip-filter-btn {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .filter-dropdown-panel {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+        }
     }
 
     .chart-card,
     .chart-visual-card {
         background: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-        border: 1px solid #e2e8f0;
+        padding: 24px;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+        border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .chart-card.full-width,
@@ -260,37 +371,57 @@
     </div>
 </div>
 <div class="analytics-container">
-    <div class="filters-bar" style="position: relative; z-index: 50; flex-wrap: wrap;">
-        <div style="font-weight: 600; color: #1e293b; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-filter" style="color: #1a4d32;"></i> Date Range:
-        </div>
-        <div class="month-chip-container" style="position: relative; display: inline-flex;">
-            <button id="filter-month-btn" type="button" class="chip-filter-btn">
-                <i class="fa-solid fa-calendar-days" style="color: #1a4d32;"></i>
-                <span id="month-label">All Months</span> ▾
+    <div class="filters-bar" style="position: relative; z-index: 50;">
+        <div class="filter-controls-group" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: 1; min-width: 0;">
+            <div style="font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px; font-size: 0.9rem; margin-right: 4px;">
+                <i class="fa-solid fa-filter" style="color: #2A7B4C;"></i> Date Range:
+            </div>
+            <div class="filter-chip-wrapper month-chip-container">
+                <button id="filter-month-btn" type="button" class="chip-filter-btn">
+                    <i class="fa-solid fa-calendar-days" style="color: #2A7B4C;"></i>
+                    <span id="month-label">All Months</span> ▾
+                </button>
+                <div id="month-dropdown-panel" class="filter-dropdown-panel" style="min-width: 280px;">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+                <input type="hidden" id="monthFilter" value="">
+            </div>
+            <div class="filter-chip-wrapper week-chip-container">
+                <input type="hidden" id="weekFilter" value="">
+                <button id="filter-week-btn" type="button" class="chip-filter-btn">
+                    <i class="fa-solid fa-calendar-week" style="color: #2A7B4C;"></i>
+                    <span id="week-label">All Weeks</span> ▾
+                </button>
+                <div id="week-dropdown-panel" class="filter-dropdown-panel">
+                    <button type="button" class="dropdown-item selected" data-value="" data-label="All Weeks">
+                        <span>All Weeks</span>
+                        <span class="item-range-pill">Entire Month</span>
+                    </button>
+                    <button type="button" class="dropdown-item" data-value="1" data-label="Week 1">
+                        <span>Week 1</span>
+                        <span class="item-range-pill">Days 1–7</span>
+                    </button>
+                    <button type="button" class="dropdown-item" data-value="2" data-label="Week 2">
+                        <span>Week 2</span>
+                        <span class="item-range-pill">Days 8–14</span>
+                    </button>
+                    <button type="button" class="dropdown-item" data-value="3" data-label="Week 3">
+                        <span>Week 3</span>
+                        <span class="item-range-pill">Days 15–21</span>
+                    </button>
+                    <button type="button" class="dropdown-item" data-value="4" data-label="Week 4">
+                        <span>Week 4</span>
+                        <span class="item-range-pill">Days 22+</span>
+                    </button>
+                </div>
+            </div>
+            <button id="clear-filters-btn" type="button" class="btn-clear-filters" style="display: none;">
+                <i class="fa-solid fa-filter-circle-xmark"></i> Clear Filters
             </button>
-            <div id="month-dropdown-panel" class="filter-dropdown-panel" style="min-width: 280px;">
-                <!-- Will be populated by JavaScript -->
-            </div>
-            <input type="hidden" id="monthFilter" value="">
         </div>
-        <div style="position: relative;">
-            <input type="hidden" id="weekFilter" value="">
-            <button id="filter-week-btn" type="button" class="chip-filter-btn">All Weeks ▾</button>
-            <div id="week-dropdown-panel" class="filter-dropdown-panel">
-                <button type="button" class="dropdown-item selected" data-value="">All Weeks</button>
-                <button type="button" class="dropdown-item" data-value="1">Week 1 (Days 1-7)</button>
-                <button type="button" class="dropdown-item" data-value="2">Week 2 (Days 8-14)</button>
-                <button type="button" class="dropdown-item" data-value="3">Week 3 (Days 15-21)</button>
-                <button type="button" class="dropdown-item" data-value="4">Week 4 (Days 22+)</button>
-            </div>
-        </div>
-        <button id="clear-filters-btn" type="button" class="btn-clear-filters" style="display: none;">
-            <i class="fa-solid fa-filter-circle-xmark"></i> Clear Filters
-        </button>
-        <div style="margin-left: auto;">
-            <a href="#" id="generateReportBtn"
-                style="text-decoration: none; padding: 8px 16px; background: #e1b12c; color: #fff; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: background 0.2s; font-size: 0.85rem;">
+        <div class="filter-actions-group" style="margin-left: auto;">
+            <a href="#" id="generateReportBtn" class="btn-generate-report"
+                style="text-decoration: none; padding: 9px 18px; background: #164630; color: #fff; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: all 0.2s ease; font-size: 0.85rem; box-shadow: 0 2px 8px rgba(22, 70, 48, 0.2); white-space: nowrap;">
                 <i class="fa-solid fa-print"></i> Generate Report
             </a>
         </div>
@@ -303,10 +434,10 @@
                 <span style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background-color: #f59e0b;"></span> Under Review
             </div>
             <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: #1e293b;">
-                <span style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background-color: #164630;"></span> In Progress
+                <span style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background-color: #0284c7;"></span> In Progress
             </div>
             <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 600; color: #1e293b;">
-                <span style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background-color: #0f766e;"></span> Resolved
+                <span style="display: inline-block; width: 12px; height: 12px; border-radius: 3px; background-color: #2A7B4C;"></span> Resolved
             </div>
         </div>
         <div style="position: relative; height: 320px;">
@@ -358,14 +489,25 @@
 
             const select = document.createElement('select');
             select.id = 'year-select';
-            select.style.padding = '6px 10px';
-            select.style.border = '1px solid #cbd5e1';
-            select.style.borderRadius = '8px';
+            select.style.padding = '6px 12px';
+            select.style.border = '1.5px solid #cbd5e1';
+            select.style.borderRadius = '10px';
             select.style.background = '#ffffff';
             select.style.color = '#1e293b';
-            select.style.fontSize = '0.9rem';
+            select.style.fontSize = '0.88rem';
+            select.style.fontWeight = '600';
+            select.style.outline = 'none';
             select.style.cursor = 'pointer';
-            select.style.minWidth = '100px';
+            select.style.minWidth = '110px';
+            select.style.transition = 'all 0.2s ease';
+            select.addEventListener('focus', () => {
+                select.style.borderColor = '#2A7B4C';
+                select.style.boxShadow = '0 0 0 3px rgba(42, 123, 76, 0.15)';
+            });
+            select.addEventListener('blur', () => {
+                select.style.borderColor = '#cbd5e1';
+                select.style.boxShadow = 'none';
+            });
 
             const startYear = 2025;
             for (let year = currentYear; year >= startYear; year--) {
@@ -402,7 +544,12 @@
                 e.preventDefault();
                 monthFilter.value = '';
                 weekFilter.value = '';
-                weekBtn.innerHTML = 'All Weeks ▾';
+                const weekLabel = document.getElementById('week-label');
+                if (weekLabel) {
+                    weekLabel.textContent = "All Weeks";
+                } else {
+                    weekBtn.innerHTML = '<i class="fa-solid fa-calendar-week" style="color: #2A7B4C;"></i> <span id="week-label">All Weeks</span> ▾';
+                }
                 weekBtn.classList.remove('active-chip');
                 updateMonthChip();
                 monthPanel.querySelectorAll('.dropdown-item').forEach(item => {
@@ -471,27 +618,57 @@
         }
         updateMonthChip();
 
+        function toggleDropdown(panel) {
+            const isVisible = panel.style.display === 'block';
+            document.querySelectorAll('.filter-dropdown-panel').forEach(p => p.style.display = 'none');
+            if (!isVisible) {
+                panel.style.display = 'block';
+                // Responsive viewport boundary containment
+                const rect = panel.getBoundingClientRect();
+                const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+                if (rect.right > viewportWidth - 16) {
+                    panel.style.left = 'auto';
+                    panel.style.right = '0';
+                } else {
+                    panel.style.left = '0';
+                    panel.style.right = 'auto';
+                }
+            }
+        }
+
         monthBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const isVisible = monthPanel.style.display === 'block';
-            document.querySelectorAll('.filter-dropdown-panel').forEach(p => p.style.display = 'none');
-            monthPanel.style.display = isVisible ? 'none' : 'block';
+            toggleDropdown(monthPanel);
         });
 
         weekBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const isVisible = weekPanel.style.display === 'block';
-            document.querySelectorAll('.filter-dropdown-panel').forEach(p => p.style.display = 'none');
-            weekPanel.style.display = isVisible ? 'none' : 'block';
+            toggleDropdown(weekPanel);
         });
 
         weekPanel.addEventListener('click', (e) => {
             const item = e.target.closest('.dropdown-item');
             if (!item) return;
             const val = item.getAttribute('data-value');
-            const text = item.textContent.trim();
+            const label = item.getAttribute('data-label') || (val ? `Week ${val}` : 'All Weeks');
             weekFilter.value = val;
-            weekBtn.innerHTML = `${val ? text.split(' ')[0] + ' ' + text.split(' ')[1] : 'All Weeks'} ▾`;
+
+            // Auto-select active/current month if user chooses a week without having chosen a month first
+            if (val && !monthFilter.value) {
+                const now = new Date();
+                const yr = selectedYear || now.getFullYear();
+                const mo = String(now.getMonth() + 1).padStart(2, '0');
+                monthFilter.value = `${yr}-${mo}`;
+                updateMonthChip();
+            }
+
+            const weekLabel = document.getElementById('week-label');
+            if (weekLabel) {
+                weekLabel.textContent = label;
+            } else {
+                weekBtn.innerHTML = `<i class="fa-solid fa-calendar-week" style="color: ${val ? '#ffffff' : '#2A7B4C'};"></i> <span id="week-label">${label}</span> ▾`;
+            }
+
             if (val) {
                 weekBtn.classList.add('active-chip');
             } else {
@@ -517,7 +694,12 @@
             weekFilter.value = "";
             populateMonthOptions(selectedYear);
             updateMonthChip();
-            weekBtn.innerHTML = "All Weeks ▾";
+            const weekLabel = document.getElementById('week-label');
+            if (weekLabel) {
+                weekLabel.textContent = "All Weeks";
+            } else {
+                weekBtn.innerHTML = '<i class="fa-solid fa-calendar-week" style="color: #2A7B4C;"></i> <span id="week-label">All Weeks</span> ▾';
+            }
             weekBtn.classList.remove('active-chip');
             weekPanel.querySelectorAll('.dropdown-item').forEach(i => i.classList.toggle('selected', i.getAttribute('data-value') === ""));
             clearBtn.style.display = 'none';
@@ -622,7 +804,8 @@
                     datasets: [{
                         label: 'Report Status',
                         data: [statusTotals.pending, statusTotals.in_progress, statusTotals.resolved],
-                        backgroundColor: ['#f59e0b', '#164630', '#0f766e']
+                        backgroundColor: ['#f59e0b', '#0284c7', '#2A7B4C'],
+                        borderRadius: 6
                     }]
                 },
                 options: {

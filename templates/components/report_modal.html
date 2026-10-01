@@ -248,19 +248,22 @@
             }
             .notes-input-box {
                 width: 100%;
-                min-height: 120px;
-                border-radius: 18px;
-                border: 1px solid #cbd5e1;
-                background: #ffffff;
-                padding: 16px 18px;
-                font-size: 0.95rem;
+                min-height: 110px;
+                border-radius: 12px;
+                border: 1.5px solid #cbd5e1;
+                background-color: #f8faf9;
+                padding: 14px 16px;
+                font-size: 0.92rem;
                 color: #0f172a;
                 resize: vertical;
                 outline: none;
+                transition: all 0.2s ease;
+                box-sizing: border-box;
             }
             .notes-input-box:focus {
-                border-color: #38bdf8;
-                box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.12);
+                border-color: #2A7B4C;
+                background-color: #ffffff;
+                box-shadow: 0 0 0 3px rgba(42, 123, 76, 0.15);
             }
             .expert-reco-clean-list li {
                 display: flex;
@@ -296,15 +299,71 @@
                 box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
             }
             .btn-control.cancel-secondary {
-                background-color: #dc2626;
-                color: #ffffff;
-                border-color: #dc2626;
+                background-color: #f1f5f9;
+                color: #475569;
+                border-color: #e2e8f0;
             }
             .btn-control.cancel-secondary:hover,
             .btn-control.cancel-secondary:focus-visible {
-                background-color: #b91c1c;
-                color: #ffffff;
-                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14);
+                background-color: #e2e8f0;
+                color: #0f172a;
+                border-color: #cbd5e1;
+                box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            }
+            .modal-action-circle-btn {
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: 44px !important;
+                height: 44px !important;
+                min-width: 44px !important;
+                min-height: 44px !important;
+                max-width: 44px !important;
+                max-height: 44px !important;
+                padding: 0 !important;
+                border-radius: 50% !important;
+                cursor: pointer;
+                transition: all 0.2s ease !important;
+                font-size: 1.05rem !important;
+                line-height: 1 !important;
+            }
+
+            .modal-action-circle-btn:active {
+                transform: scale(0.96) !important;
+            }
+
+            /* Print button: brand green tint */
+            #report-print-btn.modal-action-circle-btn {
+                background-color: #f0fdf4 !important;
+                color: #166534 !important;
+                border: 1px solid #bbf7d0 !important;
+                box-shadow: 0 1px 3px rgba(22, 101, 52, 0.06) !important;
+            }
+
+            #report-print-btn.modal-action-circle-btn:hover,
+            #report-print-btn.modal-action-circle-btn:focus-visible {
+                background-color: #dcfce7 !important;
+                color: #14532d !important;
+                border-color: #86efac !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 3px 8px rgba(22, 101, 52, 0.12) !important;
+            }
+
+            /* Close button: soft rose tint */
+            #report-modal-close-btn.modal-action-circle-btn {
+                background-color: #fef2f2 !important;
+                color: #dc2626 !important;
+                border: 1px solid #fecaca !important;
+                box-shadow: 0 1px 3px rgba(220, 38, 38, 0.06) !important;
+            }
+
+            #report-modal-close-btn.modal-action-circle-btn:hover,
+            #report-modal-close-btn.modal-action-circle-btn:focus-visible {
+                background-color: #fee2e2 !important;
+                color: #b91c1c !important;
+                border-color: #fca5a5 !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 3px 8px rgba(220, 38, 38, 0.12) !important;
             }
             /* Make the reschedule/schedule modal close buttons use the primary red pill (photo1)
                and hover into a subtle light background instead of darkening. */
@@ -526,25 +585,6 @@
             width: 100%;
         }
 
-        .notes-input-box {
-            width: 100%;
-            height: 110px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            background-color: #f8faf9;
-            padding: 14px;
-            font-size: 0.88rem;
-            color: var(--text-dark);
-            resize: none;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .notes-input-box:focus {
-            border-color: rgba(82, 130, 101, 0.4);
-            background-color: #ffffff;
-        }
-
         .control-action-bar {
             display: flex;
             flex-direction: column;
@@ -579,13 +619,6 @@
             background-color: #1e5c3f; 
             transform: translateY(-1px);
         }
-
-        .btn-control.cancel-secondary { 
-            background-color: #fff5f5; 
-            border: 1px solid rgba(239, 68, 68, 0.15); 
-            color: #e53e3e; 
-        }
-        .btn-control.cancel-secondary:hover { background-color: #fee2e2; }
 
         /* --- PENDING VS VERIFIED RESULT ENHANCEMENTS --- */
         .pest-eyebrow-container {
@@ -716,11 +749,14 @@
         <div class="modal-header-inline" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 10px;">
             <h2 style="margin: 0;" data-i18n="modal.summary_title">{{ t('modal.summary_title', 'Report Summary') }}</h2>
             <div style="display:flex; align-items:center; gap:8px;">
-                <!-- Print button: icon-only, small, unobtrusive on mobile -->
-                <button id="report-print-btn" class="btn-control" type="button" title="{{ t('modal.btn_print', 'Print report') }}" onclick="printReportModal()" style="width:auto; min-height:34px; padding:8px 10px; border-radius:999px; background:#f3f4f6; color:#164630; border:1px solid #e6e7ea; box-shadow:none;">
+                <!-- Print button: unified 44x44 circular button -->
+                <button id="report-print-btn" class="modal-action-circle-btn" type="button" title="{{ t('modal.btn_print', 'Print report') }}" aria-label="{{ t('modal.btn_print', 'Print report') }}" onclick="printReportModal()">
                     <i class="fa-solid fa-print"></i>
                 </button>
-                <button class="btn-control cancel-secondary" id="report-modal-close-btn" type="button" onclick="closeReportModal()" style="width: auto; min-height: 34px; padding: 8px 12px; border-radius: 999px; background: #dc2626; color: #ffffff; border: 1px solid #dc2626; box-shadow: none;" data-i18n="modal.btn_close">{{ t('modal.btn_close', 'Close') }}</button>
+                <!-- Close button: unified 44x44 circular button (×) matching print button -->
+                <button id="report-modal-close-btn" class="modal-action-circle-btn" type="button" title="{{ t('modal.btn_close', 'Close') }}" aria-label="{{ t('modal.btn_close', 'Close') }}" onclick="closeReportModal()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
         </div>
 
@@ -875,7 +911,7 @@
                     <label style="display:block; font-size: 0.78rem; font-weight: 700; color: #166534; margin-bottom: 4px;">
                         Verified Classification / Diagnosis:
                     </label>
-                    <select id="agri-verified-pest-select" onchange="handleAgriPestSelectChange(this.value)" style="width: 100%; height: 40px; border-radius: 10px; border: 1.5px solid #86efac; background: white; padding: 0 12px; font-size: 0.88rem; color: #14532d; outline: none; font-weight: 600;">
+                    <select id="agri-verified-pest-select" onchange="handleAgriPestSelectChange(this.value)" style="width: 100%; height: 42px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: #ffffff url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232A7B4C' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E&quot;) no-repeat right 12px center / 1rem; appearance: none; -webkit-appearance: none; padding: 0 36px 0 14px; font-size: 0.88rem; color: #0f172a; outline: none; font-weight: 600; transition: all 0.2s ease;">
                         <option value="Brontispa">Brontispa (Coconut Leaf Beetle)</option>
                         <option value="Rhinoceros Beetle">Rhinoceros Beetle (Coconut Rhino Beetle)</option>
                         <option value="Healthy Coconut Leaf">Healthy Coconut Leaf</option>
@@ -883,7 +919,7 @@
                         <option value="custom">Other / Custom Diagnosis (Type below)</option>
                     </select>
                     <div id="agri-custom-pest-wrap" style="display:none; margin-top: 8px;">
-                        <input type="text" id="agri-custom-pest-input" placeholder="Type the corrected pest or diagnosis..." style="width: 100%; height: 38px; border-radius: 8px; border: 1.5px solid #86efac; background: white; padding: 0 12px; font-size: 0.86rem; color: #14532d; outline: none; font-weight: 600;" />
+                        <input type="text" id="agri-custom-pest-input" placeholder="Type the corrected pest or diagnosis..." style="width: 100%; height: 40px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: white; padding: 0 14px; font-size: 0.88rem; color: #0f172a; outline: none; font-weight: 500; transition: all 0.2s ease;" />
                     </div>
                 </div>
             </div>

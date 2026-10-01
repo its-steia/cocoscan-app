@@ -160,44 +160,56 @@ def test_farmer_remember_me_post_auth_api():
 
 
 def test_hybrid_inactivity_and_farmer_remember_restoration():
-    """Verify hybrid session: standard session times out, while farmer remember token restores session."""
+    """Verify non-farmer sessions time out after 15m, while farmers are excluded from 15m inactivity."""
     app.config.update(TESTING=True)
     with app.test_client() as client:
         test_uid = str(uuid.uuid4())
-        # Scenario A: Non-remembered session times out after 15m (900s)
+        # Scenario A: Non-farmer session times out after 15m (900s)
         with client.session_transaction() as sess:
             sess['user_id'] = test_uid
-            sess['user_email'] = 'timeout@example.com'
-            sess['user_role'] = 'farmer'
-            sess['user_name'] = 'Farmer Timeout'
-            sess['remember_me'] = False
+            sess['user_email'] = 'timeout_agri@example.com'
+            sess['user_role'] = 'agriculturist'
+            sess['user_name'] = 'Agri Timeout'
             sess['last_active'] = time.time() - 950  # 950 seconds ago (> 900s)
 
         response = client.get('/dashboard', follow_redirects=False)
         assert response.status_code == 302
         assert '/login' in response.headers.get('Location', '')
         
-        # Verify session was cleared
+        # Verify non-farmer session was cleared
         with client.session_transaction() as sess:
             assert 'user_id' not in sess
 
-        # Scenario B: Remembered farmer session auto-restores via remember token cookie
-        restore_uid = str(uuid.uuid4())
-        raw_token, _ = security_service.create_remember_token(
-            restore_uid,
-            'restored@example.com',
-            'farmer',
-            'Farmer Restored'
-        )
-        client.set_cookie(REMEMBER_COOKIE_NAME, raw_token)
-
-        response = client.get('/dashboard', follow_redirects=False)
-        assert response.status_code == 302
-        assert '/farmer/dashboard' in response.headers.get('Location', '')
+        # Scenario B: Farmer session is EXCLUDED from 15m inactivity (950s does not expire session)
+        farmer_uid = str(uuid.uuid4())
         with client.session_transaction() as sess:
-            assert sess.get('user_id') == restore_uid
-            assert sess.get('user_email') == 'restored@example.com'
-            assert sess.get('remember_me') is True
+            sess['user_id'] = farmer_uid
+            sess['user_email'] = 'farmer_active@example.com'
+            sess['user_role'] = 'farmer'
+            sess['user_name'] = 'Farmer Active'
+            sess['last_active'] = time.time() - 950  # 950 seconds ago (> 900s, but < 30 days)
+
+        response_farmer = client.get('/dashboard', follow_redirects=False)
+        assert response_farmer.status_code == 302
+        assert '/farmer/dashboard' in response_farmer.headers.get('Location', '')
+        with client.session_transaction() as sess:
+            assert sess.get('user_id') == farmer_uid
+            assert sess.get('user_email') == 'farmer_active@example.com'
+
+        # Scenario C: Farmer session expires after 30 days of inactivity
+        farmer_timeout_uid = str(uuid.uuid4())
+        with client.session_transaction() as sess:
+            sess['user_id'] = farmer_timeout_uid
+            sess['user_email'] = 'farmer_30d_timeout@example.com'
+            sess['user_role'] = 'farmer'
+            sess['user_name'] = 'Farmer 30d Timeout'
+            sess['last_active'] = time.time() - (31 * 86400)  # 31 days ago (> 30 days)
+
+        response_30d = client.get('/dashboard', follow_redirects=False)
+        assert response_30d.status_code == 302
+        assert '/login' in response_30d.headers.get('Location', '')
+        with client.session_transaction() as sess:
+            assert 'user_id' not in sess
 
 
 def test_logout_revokes_remember_token_and_cookie():

@@ -23,10 +23,34 @@
             --bg-card: #ffffff;
             --brand-dark: #0b251a;
             --brand-accent: #4ac68f;
-            --primary-green: #528265;
+            --primary-green: #2A7B4C;
+            --primary-hover: #164630;
+            --button-base: #1B4D3E;
             --text-dark: #1e293b;
             --text-muted: #64748b;
             --border-light: rgba(0, 0, 0, 0.05);
+            --border-input: #cbd5e1;
+            --radius-main: 20px;
+            --radius-card: 20px;
+            --radius-input: 12px;
+            --focus-ring: 0 0 0 3px rgba(42, 123, 76, 0.15);
+        }
+
+        /* Standardized Form Controls System */
+        input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="hidden"]),
+        select,
+        textarea {
+            font-family: inherit;
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+        }
+
+        input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="hidden"]):focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-green) !important;
+            box-shadow: var(--focus-ring) !important;
         }
 
         * {
@@ -1504,8 +1528,10 @@
             }
         }
     </script>
+    {% set current_role_norm = ((session.get('user_role', '') if session is defined and session else '') or (user_role if user_role is defined and user_role else '') or (sidebar_role if sidebar_role is defined and sidebar_role else ''))|lower %}
+    {% if 'farmer' not in current_role_norm %}
     <script>
-        // 15-Minute Client-Side Inactivity Monitor
+        // 15-Minute Client-Side Inactivity Monitor (Admin, Agriculturist, LGU only - Farmers excluded due to 90-day stay-logged-in rule)
         (function() {
             let timeoutTimer;
             const TIMEOUT_DURATION = 15 * 60 * 1000; // 15 minutes in ms
@@ -1528,6 +1554,7 @@
             resetInactivityTimer();
         })();
     </script>
+    {% endif %}
     <script>
         (function() {
             function setButtonLoading(btn, customText) {

@@ -143,25 +143,26 @@
     }
 
     .btn-clear-filters {
-        background-color: #eb5757;
-        color: #ffffff;
-        border: none;
-        padding: 8px 14px;
-        min-width: 120px;
-        border-radius: 28px;
+        background-color: #f1f5f9;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+        padding: 8px 16px;
+        border-radius: 20px;
         font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
         display: none;
         align-items: center;
         gap: 6px;
-        box-shadow: 0 2px 4px rgba(235, 87, 87, 0.2);
+        box-shadow: none;
         transition: all 0.2s ease;
         white-space: nowrap;
     }
 
     .btn-clear-filters:hover {
-        background-color: #d84343;
+        background-color: #e2e8f0;
+        color: #1e293b;
+        border-color: #cbd5e1;
         transform: translateY(-1px);
     }
 
@@ -217,6 +218,146 @@
         background: #fef2f2;
         color: #dc2626;
         border: 1px solid #fca5a5;
+    }
+
+    /* --- CUSTOM CALENDAR DROPDOWN SYSTEM --- */
+    .cal-dropdown-panel {
+        display: none;
+        position: fixed;
+        z-index: 80;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+        border-radius: 14px;
+        padding: 14px;
+        width: 290px;
+        pointer-events: auto;
+        user-select: none;
+    }
+
+    .cal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .cal-nav-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #475569;
+        font-size: 0.85rem;
+        transition: background 0.15s, color 0.15s;
+    }
+
+    .cal-nav-btn:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .cal-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #0f172a;
+    }
+
+    .cal-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        text-align: center;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #94a3b8;
+        margin-bottom: 6px;
+    }
+
+    .cal-days-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+    }
+
+    .cal-day-cell {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        border-radius: 8px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: #334155;
+        transition: all 0.15s ease;
+    }
+
+    .cal-day-cell:hover:not(.other-month) {
+        background: #eef5f2;
+        color: #1a4d32;
+        font-weight: 600;
+    }
+
+    .cal-day-cell.today:not(.selected) {
+        border: 1px solid #1a4d32;
+        font-weight: 700;
+        color: #1a4d32;
+    }
+
+    .cal-day-cell.selected {
+        background: #1a4d32 !important;
+        color: #ffffff !important;
+        font-weight: 700;
+        box-shadow: 0 2px 6px rgba(26, 77, 50, 0.3);
+    }
+
+    .cal-day-cell.other-month {
+        color: #cbd5e1;
+        cursor: default;
+    }
+
+    .cal-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .cal-footer-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 5px 10px;
+        border-radius: 6px;
+        transition: all 0.15s ease;
+    }
+
+    .cal-footer-btn.clear {
+        color: #64748b;
+    }
+
+    .cal-footer-btn.clear:hover {
+        background: #f1f5f9;
+        color: #0f172a;
+    }
+
+    .cal-footer-btn.today {
+        background: #eef5f2;
+        color: #1a4d32;
+    }
+
+    .cal-footer-btn.today:hover {
+        background: #dcece4;
     }
 
     /* --- PAGINATION SYSTEM --- */
@@ -307,11 +448,9 @@
             <button id="filter-all-btn" class="chip-filter-btn active-chip">All</button>
             <button id="filter-barangay-btn" class="chip-filter-btn">Barangay ▾</button>
             <button id="filter-status-btn" class="chip-filter-btn">Status ▾</button>
-            <div style="position: relative; display: inline-flex;">
-                <button type="button" id="filter-calendar-btn" class="chip-filter-btn" title="Filter by date"><i
-                        class="fa-solid fa-calendar-days"></i></button>
-                <input type="date" id="report-date-filter" aria-label="Filter by date" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; border: none; background: transparent; z-index: -1;">
-            </div>
+            <button type="button" id="filter-calendar-btn" class="chip-filter-btn" title="Filter by date"><i
+                    class="fa-solid fa-calendar-days"></i></button>
+            <input type="hidden" id="report-date-filter" value="">
         </div>
         <button id="clear-filters-btn" class="btn-clear-filters" onclick="clearAllActiveFilters()">
             <i class="fa-solid fa-filter-circle-xmark"></i> Clear Filters
@@ -327,6 +466,28 @@
         style="position:absolute; width:0; height:0; margin:0; padding:0; pointer-events:none;">
         <div class="filter-dropdown-panel"
             style="display:none; position:fixed; z-index:80; background:white; border:1px solid #e2e8f0; box-shadow:0 6px 18px rgba(0,0,0,0.08); border-radius:8px; padding:8px; min-width:220px; max-height:380px; overflow:auto; pointer-events:auto;">
+        </div>
+    </div>
+    <div id="calendar-dropdown" class="filter-dropdown"
+        style="position:absolute; width:0; height:0; margin:0; padding:0; pointer-events:none;">
+        <div class="filter-dropdown-panel cal-dropdown-panel" id="calendar-dropdown-panel">
+            <div class="cal-header">
+                <button type="button" id="cal-prev-month" class="cal-nav-btn" title="Previous month" aria-label="Previous month">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span id="cal-month-year-label" class="cal-title">October 2026</span>
+                <button type="button" id="cal-next-month" class="cal-nav-btn" title="Next month" aria-label="Next month">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+            <div class="cal-weekdays">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div id="cal-days-grid" class="cal-days-grid"></div>
+            <div class="cal-footer">
+                <button type="button" id="cal-clear-btn" class="cal-footer-btn clear">Clear</button>
+                <button type="button" id="cal-today-btn" class="cal-footer-btn today">Today</button>
+            </div>
         </div>
     </div>
 </div>
@@ -437,6 +598,18 @@
             const calBtn = document.getElementById("filter-calendar-btn");
             if (calBtn) {
                 calBtn.classList.toggle("active-chip", Boolean(activeDateFilter));
+                if (activeDateFilter) {
+                    const parts = activeDateFilter.split("-").map(Number);
+                    if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1]) && !isNaN(parts[2])) {
+                        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+                        const label = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+                        calBtn.innerHTML = `<i class="fa-solid fa-calendar-days" style="margin-right: 4px;"></i> ${label}`;
+                    } else {
+                        calBtn.innerHTML = `<i class="fa-solid fa-calendar-days" style="margin-right: 4px;"></i> ${activeDateFilter}`;
+                    }
+                } else {
+                    calBtn.innerHTML = `<i class="fa-solid fa-calendar-days"></i>`;
+                }
             }
 
             const statusPanel = document.querySelector("#status-dropdown .filter-dropdown-panel");
@@ -514,14 +687,13 @@
         }
 
         function dismissDatePicker() {
+            const calPanel = document.getElementById("calendar-dropdown-panel");
+            if (calPanel) {
+                calPanel.style.display = "none";
+            }
             const dateInput = document.getElementById("report-date-filter");
             if (dateInput) {
                 dateInput.value = "";
-                dateInput.blur();
-                dateInput.disabled = true;
-                setTimeout(() => {
-                    dateInput.disabled = false;
-                }, 20);
             }
         }
 
@@ -553,32 +725,134 @@
             });
         }
 
-        const dateInput = document.getElementById("report-date-filter");
+        // Custom Calendar Controller
         const calBtn = document.getElementById("filter-calendar-btn");
-        if (calBtn && dateInput) {
+        const calPanel = document.getElementById("calendar-dropdown-panel");
+        const calMonthYearLabel = document.getElementById("cal-month-year-label");
+        const calDaysGrid = document.getElementById("cal-days-grid");
+        const calPrevBtn = document.getElementById("cal-prev-month");
+        const calNextBtn = document.getElementById("cal-next-month");
+        const calClearBtn = document.getElementById("cal-clear-btn");
+        const calTodayBtn = document.getElementById("cal-today-btn");
+
+        const calMonthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        let calViewDate = new Date();
+
+        function renderCustomCalendar() {
+            if (!calMonthYearLabel || !calDaysGrid) return;
+            const year = calViewDate.getFullYear();
+            const month = calViewDate.getMonth();
+            calMonthYearLabel.textContent = `${calMonthNames[month]} ${year}`;
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+            const totalDaysPrevMonth = new Date(year, month, 0).getDate();
+
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+
+            let html = "";
+
+            // Trailing days from previous month
+            for (let i = firstDayIndex - 1; i >= 0; i--) {
+                const dayNum = totalDaysPrevMonth - i;
+                html += `<div class="cal-day-cell other-month">${dayNum}</div>`;
+            }
+
+            // Days of current month
+            for (let d = 1; d <= totalDaysInMonth; d++) {
+                const dayStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const isSelected = activeDateFilter === dayStr;
+                const isToday = todayStr === dayStr;
+                let classes = "cal-day-cell";
+                if (isSelected) classes += " selected";
+                if (isToday) classes += " today";
+
+                html += `<button type="button" class="${classes}" data-date="${dayStr}">${d}</button>`;
+            }
+
+            // Remaining cells to complete grid
+            const totalCells = firstDayIndex + totalDaysInMonth;
+            const remaining = (7 - (totalCells % 7)) % 7;
+            for (let j = 1; j <= remaining; j++) {
+                html += `<div class="cal-day-cell other-month">${j}</div>`;
+            }
+
+            calDaysGrid.innerHTML = html;
+
+            calDaysGrid.querySelectorAll("button.cal-day-cell").forEach(btn => {
+                btn.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    activeDateFilter = this.getAttribute("data-date");
+                    currentPage = 1;
+                    if (calPanel) calPanel.style.display = "none";
+                    renderReportsTable();
+                });
+            });
+        }
+
+        if (calBtn && calPanel) {
             calBtn.addEventListener("click", function (e) {
                 e.stopPropagation();
-                if (activeDateFilter) {
-                    activeDateFilter = "";
-                    dismissDatePicker();
-                    currentPage = 1;
-                    renderReportsTable();
-                    return;
-                }
-                if (typeof dateInput.showPicker === "function") {
-                    try {
-                        dateInput.showPicker();
-                    } catch (err) {
-                        dateInput.click();
+                const isVisible = calPanel.style.display === "block";
+                document.querySelectorAll(".filter-dropdown-panel").forEach(p => p.style.display = "none");
+                if (!isVisible) {
+                    if (activeDateFilter) {
+                        const parts = activeDateFilter.split("-").map(Number);
+                        if (parts.length === 3 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                            calViewDate = new Date(parts[0], parts[1] - 1, 1);
+                        }
+                    } else {
+                        calViewDate = new Date();
                     }
-                } else {
-                    dateInput.click();
+                    renderCustomCalendar();
+                    const rect = calBtn.getBoundingClientRect();
+                    calPanel.style.top = `${rect.bottom + 6}px`;
+                    const leftPos = Math.max(10, Math.min(rect.left, window.innerWidth - 305));
+                    calPanel.style.left = `${leftPos}px`;
+                    calPanel.style.display = "block";
                 }
             });
-            dateInput.addEventListener("change", function () {
-                activeDateFilter = this.value;
+        }
+
+        if (calPrevBtn) {
+            calPrevBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                calViewDate.setMonth(calViewDate.getMonth() - 1);
+                renderCustomCalendar();
+            });
+        }
+
+        if (calNextBtn) {
+            calNextBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                calViewDate.setMonth(calViewDate.getMonth() + 1);
+                renderCustomCalendar();
+            });
+        }
+
+        if (calTodayBtn) {
+            calTodayBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                const today = new Date();
+                const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+                activeDateFilter = todayStr;
                 currentPage = 1;
-                this.blur();
+                if (calPanel) calPanel.style.display = "none";
+                renderReportsTable();
+            });
+        }
+
+        if (calClearBtn) {
+            calClearBtn.addEventListener("click", function (e) {
+                e.stopPropagation();
+                activeDateFilter = "";
+                currentPage = 1;
+                if (calPanel) calPanel.style.display = "none";
                 renderReportsTable();
             });
         }
@@ -586,6 +860,11 @@
         const allBtn = document.getElementById("filter-all-btn");
         if (allBtn) {
             allBtn.addEventListener("click", window.clearAllActiveFilters);
+        }
+
+        const clearBtn = document.getElementById("clear-filters-btn");
+        if (clearBtn) {
+            clearBtn.addEventListener("click", window.clearAllActiveFilters);
         }
 
         // Build Barangay Dropdown
